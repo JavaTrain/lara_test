@@ -7,8 +7,6 @@ use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-
 class HomeController extends Controller
 {
     /**
