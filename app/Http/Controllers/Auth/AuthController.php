@@ -60,4 +60,61 @@ class AuthController extends Controller
 
         return $this->response->array(compact('token'))->setStatusCode(200);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function index()
+    {
+        return User::all();
+    }
+
+    /**
+     *
+     */
+    public function show()
+    {
+        try{
+            $user = JWTAuth::parseToken()->toUser();
+            if(!$user){
+                return $this->response->errorNotFound('User not found');
+            }
+        } catch(JWTException $e){
+            return $this->response->error('Something went wrong');
+        }
+
+        return $this->response->array(compact('user'))->setStatusCode(200);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken(){
+        $token = JWTAuth::getToken();
+        if(!$token){
+            $this->response->errorUnauthorized('Token is invalid');
+        }
+
+        try{
+            $refreshToken = JWTAuth::refresh($token);
+        }catch(JWTException $e){
+            $this->response->error('Something went wrong');
+        }
+
+        return $this->response->array(compact('refreshToken'));
+    }
+
+    /**
+     *
+     */
+    public function destroy()
+    {
+        $user = JWTAuth::parseToken();
+        if(!$user){
+            ///
+        }
+
+        $user->delete();
+    }
+
 }
